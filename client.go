@@ -926,16 +926,16 @@ const (
 
 /*
 SendChatAction sends bot chat action. Available actions:
-  - ActionTyping
-  - ActionUploadPhoto
-  - ActionRecordVideo
-  - ActionUploadVideo
-  - ActionRecordAudio
-  - ActionUploadAudio
-  - ActionUploadDocument
-  - ActionFindLocation
-  - ActionRecordVideoNote
-  - ActionUploadVideoNote
+	- ActionTyping
+	- ActionUploadPhoto
+	- ActionRecordVideo
+	- ActionUploadVideo
+	- ActionRecordAudio
+	- ActionUploadAudio
+	- ActionUploadDocument
+	- ActionFindLocation
+	- ActionRecordVideoNote
+	- ActionUploadVideoNote
 */
 func (c *Client) SendChatAction(chatID string, action chatAction) error {
 	req := url.Values{}
