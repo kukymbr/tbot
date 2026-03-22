@@ -37,7 +37,7 @@ type inputFile struct {
 	name  string
 }
 
-type sendOption func(url.Values)
+type SendOption func(url.Values)
 
 // Generic message options
 var (
@@ -50,7 +50,7 @@ var (
 	OptDisableNotification = func(r url.Values) {
 		r.Set("disable_notification", "true")
 	}
-	OptReplyToMessageID = func(id int) sendOption {
+	OptReplyToMessageID = func(id int) SendOption {
 		return func(r url.Values) {
 			r.Set("reply_to_message_id", strconv.Itoa(id))
 		}
@@ -141,12 +141,12 @@ var (
 	OptDisableWebPagePreview = func(r url.Values) {
 		r.Set("disable_web_page_preview", "true")
 	}
-	OptInlineKeyboardMarkup = func(markup *InlineKeyboardMarkup) sendOption {
+	OptInlineKeyboardMarkup = func(markup *InlineKeyboardMarkup) SendOption {
 		return func(r url.Values) {
 			r.Set("reply_markup", structString(markup))
 		}
 	}
-	OptReplyKeyboardMarkup = func(markup *ReplyKeyboardMarkup) sendOption {
+	OptReplyKeyboardMarkup = func(markup *ReplyKeyboardMarkup) SendOption {
 		return func(r url.Values) {
 			r.Set("reply_markup", structString(markup))
 		}
@@ -167,19 +167,19 @@ var (
 
 /*
 SendMessage sends message to telegram chat. Available options:
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableWebPagePreview
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableWebPagePreview
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendMessage(chatID string, text string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendMessage(chatID string, text string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("text", text)
@@ -193,9 +193,9 @@ func (c *Client) SendMessage(chatID string, text string, opts ...sendOption) (*M
 
 /*
 ForwardMessage forwards message from one chat to another. Available options:
-	- OptDisableNotification
+  - OptDisableNotification
 */
-func (c *Client) ForwardMessage(chatID, fromChatID string, messageID int, opts ...sendOption) (*Message, error) {
+func (c *Client) ForwardMessage(chatID, fromChatID string, messageID int, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("from_chat_id", fromChatID)
@@ -210,17 +210,17 @@ func (c *Client) ForwardMessage(chatID, fromChatID string, messageID int, opts .
 
 // SendAudio options
 var (
-	OptDuration = func(duration int) sendOption {
+	OptDuration = func(duration int) SendOption {
 		return func(r url.Values) {
 			r.Set("duration", strconv.Itoa(duration))
 		}
 	}
-	OptPerformer = func(performer string) sendOption {
+	OptPerformer = func(performer string) SendOption {
 		return func(r url.Values) {
 			r.Set("performer", performer)
 		}
 	}
-	OptTitle = func(title string) sendOption {
+	OptTitle = func(title string) SendOption {
 		return func(r url.Values) {
 			r.Set("title", title)
 		}
@@ -229,22 +229,22 @@ var (
 
 /*
 SendAudio sends pre-uploaded audio to the chat. Pass fileID of the uploaded file. Available options:
-	- OptCaption(caption string)
-	- OptDuration(duration int)
-	- OptPerformer(performer string)
-	- OptTitle(title string)
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptCaption(caption string)
+  - OptDuration(duration int)
+  - OptPerformer(performer string)
+  - OptTitle(title string)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendAudio(chatID string, fileID string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendAudio(chatID string, fileID string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("audio", fileID)
@@ -258,22 +258,22 @@ func (c *Client) SendAudio(chatID string, fileID string, opts ...sendOption) (*M
 
 /*
 SendAudioFile sends file contents as an audio to the chat. Pass filename to send. Available options:
-	- OptCaption(caption string)
-	- OptDuration(duration int)
-	- OptPerformer(performer string)
-	- OptTitle(title string)
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptCaption(caption string)
+  - OptDuration(duration int)
+  - OptPerformer(performer string)
+  - OptTitle(title string)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendAudioFile(chatID string, filename string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendAudioFile(chatID string, filename string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	for _, opt := range opts {
@@ -286,7 +286,7 @@ func (c *Client) SendAudioFile(chatID string, filename string, opts ...sendOptio
 
 // SendPhoto options
 var (
-	OptCaption = func(caption string) sendOption {
+	OptCaption = func(caption string) SendOption {
 		return func(r url.Values) {
 			r.Set("caption", caption)
 		}
@@ -295,19 +295,19 @@ var (
 
 /*
 SendPhoto sends pre-uploaded photo to the chat. Pass fileID of the photo. Available options:
-	- OptCaption(caption string)
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptCaption(caption string)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendPhoto(chatID string, fileID string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendPhoto(chatID string, fileID string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("photo", fileID)
@@ -321,19 +321,19 @@ func (c *Client) SendPhoto(chatID string, fileID string, opts ...sendOption) (*M
 
 /*
 SendPhotoFile sends photo file contents to the chat. Pass filename to send. Available options:
-	- OptCaption(caption string)
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptCaption(caption string)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendPhotoFile(chatID string, filename string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendPhotoFile(chatID string, filename string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	for _, opt := range opts {
@@ -346,19 +346,19 @@ func (c *Client) SendPhotoFile(chatID string, filename string, opts ...sendOptio
 
 /*
 SendDocument sends document to the chat. Pass fileID of the document. Available options:
-	- OptCaption(caption string)
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptCaption(caption string)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendDocument(chatID string, fileID string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendDocument(chatID string, fileID string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("document", fileID)
@@ -372,19 +372,19 @@ func (c *Client) SendDocument(chatID string, fileID string, opts ...sendOption) 
 
 /*
 SendDocumentFile sends document file contents to the chat. Pass filename to send. Available options:
-	- OptCaption(caption string)
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptCaption(caption string)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendDocumentFile(chatID string, filename string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendDocumentFile(chatID string, filename string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	for _, opt := range opts {
@@ -397,12 +397,12 @@ func (c *Client) SendDocumentFile(chatID string, filename string, opts ...sendOp
 
 // SendVideo options
 var (
-	OptWidth = func(width int) sendOption {
+	OptWidth = func(width int) SendOption {
 		return func(r url.Values) {
 			r.Set("width", strconv.Itoa(width))
 		}
 	}
-	OptHeight = func(height int) sendOption {
+	OptHeight = func(height int) SendOption {
 		return func(r url.Values) {
 			r.Set("height", strconv.Itoa(height))
 		}
@@ -414,23 +414,23 @@ var (
 
 /*
 SendVideo sends pre-uploaded video to chat. Pass fileID of the uploaded video. Available options:
-	- OptDuration(duration int)
-	- OptWidth(width int)
-	- OptHeight(height int)
-	- OptSupportsStreaming
-	- OptCaption(caption string)
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptDuration(duration int)
+  - OptWidth(width int)
+  - OptHeight(height int)
+  - OptSupportsStreaming
+  - OptCaption(caption string)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendVideo(chatID string, fileID string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendVideo(chatID string, fileID string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("video", fileID)
@@ -444,23 +444,23 @@ func (c *Client) SendVideo(chatID string, fileID string, opts ...sendOption) (*M
 
 /*
 SendVideoFile sends video file contents to the chat. Pass filename to send. Available options:
-	- OptDuration(duration int)
-	- OptWidth(width int)
-	- OptHeight(height int)
-	- OptSupportsStreaming
-	- OptCaption(caption string)
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptDuration(duration int)
+  - OptWidth(width int)
+  - OptHeight(height int)
+  - OptSupportsStreaming
+  - OptCaption(caption string)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendVideoFile(chatID string, filename string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendVideoFile(chatID string, filename string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	for _, opt := range opts {
@@ -473,7 +473,7 @@ func (c *Client) SendVideoFile(chatID string, filename string, opts ...sendOptio
 
 // SendAnimation options
 var (
-	OptThumb = func(filename string) sendOption {
+	OptThumb = func(filename string) SendOption {
 		return func(v url.Values) {
 			v.Set("thumb", filename)
 		}
@@ -482,23 +482,23 @@ var (
 
 /*
 SendAnimation sends animation to chat. Pass fileID to send. Available options:
-	- OptDuration(duration int)
-	- OptWidth(width int)
-	- OptHeight(height int)
-	- OptThumb(filename string)
-	- OptCaption(caption string)
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptDuration(duration int)
+  - OptWidth(width int)
+  - OptHeight(height int)
+  - OptThumb(filename string)
+  - OptCaption(caption string)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendAnimation(chatID string, fileID string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendAnimation(chatID string, fileID string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("animation", fileID)
@@ -519,23 +519,23 @@ func (c *Client) SendAnimation(chatID string, fileID string, opts ...sendOption)
 
 /*
 SendAnimationFile sends animation file contents to the chat. Pass filename to send. Available options:
-	- OptDuration(duration int)
-	- OptWidth(width int)
-	- OptHeight(height int)
-	- OptThumb(filename string)
-	- OptCaption(caption string)
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptDuration(duration int)
+  - OptWidth(width int)
+  - OptHeight(height int)
+  - OptThumb(filename string)
+  - OptCaption(caption string)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendAnimationFile(chatID string, filename string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendAnimationFile(chatID string, filename string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	for _, opt := range opts {
@@ -554,20 +554,20 @@ func (c *Client) SendAnimationFile(chatID string, filename string, opts ...sendO
 
 /*
 SendVoice sends audio file as a voice message. Pass file_id of previously uploaded file. Available options:
-	- OptCaption(caption string)
-	- OptDuration(duration int)
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptCaption(caption string)
+  - OptDuration(duration int)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendVoice(chatID string, fileID string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendVoice(chatID string, fileID string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("voice", fileID)
@@ -581,20 +581,20 @@ func (c *Client) SendVoice(chatID string, fileID string, opts ...sendOption) (*M
 
 /*
 SendVoiceFile sends the audio file as a voice message. Pass filename to send. Available options:
-	- OptCaption(caption string)
-	- OptDuration(duration int)
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptCaption(caption string)
+  - OptDuration(duration int)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendVoiceFile(chatID string, filename string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendVoiceFile(chatID string, filename string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	for _, opt := range opts {
@@ -607,7 +607,7 @@ func (c *Client) SendVoiceFile(chatID string, filename string, opts ...sendOptio
 
 // SendVideoNote options
 var (
-	OptLength = func(length int) sendOption {
+	OptLength = func(length int) SendOption {
 		return func(v url.Values) {
 			v.Set("length", fmt.Sprint(length))
 		}
@@ -616,19 +616,19 @@ var (
 
 /*
 SendVideoNote sends video note. Pass fileID of previously uploaded video note. Available options:
-	- OptDuration(duration int)
-	- OptLength(length int)
-	- OptThumb(filename string)
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptDuration(duration int)
+  - OptLength(length int)
+  - OptThumb(filename string)
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendVideoNote(chatID string, fileID string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendVideoNote(chatID string, fileID string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("video_note", fileID)
@@ -649,19 +649,19 @@ func (c *Client) SendVideoNote(chatID string, fileID string, opts ...sendOption)
 
 /*
 SendVideoNoteFile sends video note to chat. Pass filename to upload. Available options:
-	- OptDuration(duration int)
-	- OptLength(length int)
-	- OptThumb(filename string)
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptDuration(duration int)
+  - OptLength(length int)
+  - OptThumb(filename string)
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendVideoNoteFile(chatID string, filename string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendVideoNoteFile(chatID string, filename string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	for _, opt := range opts {
@@ -714,7 +714,7 @@ type InputMediaVideo struct {
 func (InputMediaVideo) inputMedia() {}
 
 // SendMediaGroup send a group of photos or videos as an album
-func (c *Client) SendMediaGroup(chatID string, media []InputMedia, opts ...sendOption) ([]*Message, error) {
+func (c *Client) SendMediaGroup(chatID string, media []InputMedia, opts ...SendOption) ([]*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	m, _ := json.Marshal(media)
@@ -729,7 +729,7 @@ func (c *Client) SendMediaGroup(chatID string, media []InputMedia, opts ...sendO
 
 // SendLocation options
 var (
-	OptLivePeriod = func(period int) sendOption {
+	OptLivePeriod = func(period int) SendOption {
 		return func(v url.Values) {
 			v.Set("live_period", fmt.Sprint(period))
 		}
@@ -738,17 +738,17 @@ var (
 
 /*
 SendLocation sends point on the map to chat. Available options:
-	- OptLivePeriod(period int)
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptLivePeriod(period int)
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendLocation(chatID string, latitude, longitude float64, opts ...sendOption) (*Message, error) {
+func (c *Client) SendLocation(chatID string, latitude, longitude float64, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("latitude", fmt.Sprint(latitude))
@@ -763,9 +763,9 @@ func (c *Client) SendLocation(chatID string, latitude, longitude float64, opts .
 
 /*
 EditMessageLiveLocation edits location in message sent by the bot. Available options:
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
 */
-func (c *Client) EditMessageLiveLocation(chatID string, messageID int, latitude, longitude float64, opts ...sendOption) (*Message, error) {
+func (c *Client) EditMessageLiveLocation(chatID string, messageID int, latitude, longitude float64, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("message_id", fmt.Sprint(messageID))
@@ -781,9 +781,9 @@ func (c *Client) EditMessageLiveLocation(chatID string, messageID int, latitude,
 
 /*
 EditInlineMessageLiveLocation edits location in message sent via the bot (using inline mode). Available options:
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
 */
-func (c *Client) EditInlineMessageLiveLocation(inlineMessageID string, latitude, longitude float64, opts ...sendOption) error {
+func (c *Client) EditInlineMessageLiveLocation(inlineMessageID string, latitude, longitude float64, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("inline_message_id", inlineMessageID)
 	req.Set("latitude", fmt.Sprint(latitude))
@@ -798,9 +798,9 @@ func (c *Client) EditInlineMessageLiveLocation(inlineMessageID string, latitude,
 
 /*
 StopMessageLiveLocation stop updating a live location message sent by the bot. Available options:
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
 */
-func (c *Client) StopMessageLiveLocation(chatID string, messageID int, opts ...sendOption) (*Message, error) {
+func (c *Client) StopMessageLiveLocation(chatID string, messageID int, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("message_id", fmt.Sprint(messageID))
@@ -814,9 +814,9 @@ func (c *Client) StopMessageLiveLocation(chatID string, messageID int, opts ...s
 
 /*
 StopInlineMessageLiveLocation stop updating a live location message sent via the bot (using inline mode). Available options:
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
 */
-func (c *Client) StopInlineMessageLiveLocation(inlineMessageID string, opts ...sendOption) error {
+func (c *Client) StopInlineMessageLiveLocation(inlineMessageID string, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("inline_message_id", inlineMessageID)
 	for _, opt := range opts {
@@ -828,12 +828,12 @@ func (c *Client) StopInlineMessageLiveLocation(inlineMessageID string, opts ...s
 
 // SendVenue options
 var (
-	OptFoursquareID = func(foursquareID string) sendOption {
+	OptFoursquareID = func(foursquareID string) SendOption {
 		return func(v url.Values) {
 			v.Set("foursquare_id", foursquareID)
 		}
 	}
-	OptFoursquareType = func(foursquareType string) sendOption {
+	OptFoursquareType = func(foursquareType string) SendOption {
 		return func(v url.Values) {
 			v.Set("foursquare_type", foursquareType)
 		}
@@ -842,18 +842,18 @@ var (
 
 /*
 SendVenue sends information about a venue. Available options:
-	- OptFoursquareID(foursquareID string)
-	- OptFoursquareType(foursquareType string)
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptFoursquareID(foursquareID string)
+  - OptFoursquareType(foursquareType string)
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendVenue(chatID string, latitude, longitude float64, title, address string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendVenue(chatID string, latitude, longitude float64, title, address string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("latitude", fmt.Sprint(latitude))
@@ -870,12 +870,12 @@ func (c *Client) SendVenue(chatID string, latitude, longitude float64, title, ad
 
 // SendContact options
 var (
-	OptLastName = func(lastName string) sendOption {
+	OptLastName = func(lastName string) SendOption {
 		return func(v url.Values) {
 			v.Set("last_name", lastName)
 		}
 	}
-	OptVCard = func(vCard string) sendOption {
+	OptVCard = func(vCard string) SendOption {
 		return func(v url.Values) {
 			v.Set("vcard", vCard)
 		}
@@ -884,18 +884,18 @@ var (
 
 /*
 SendContact sends phone contact. Available options:
-	- OptLastName(lastName string)
-	- OptVCard(vCard string) TODO: implement vCard support (https://tools.ietf.org/html/rfc6350)
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptLastName(lastName string)
+  - OptVCard(vCard string) TODO: implement vCard support (https://tools.ietf.org/html/rfc6350)
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendContact(chatID, phoneNumber, firstName string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendContact(chatID, phoneNumber, firstName string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("phone_number", phoneNumber)
@@ -926,16 +926,16 @@ const (
 
 /*
 SendChatAction sends bot chat action. Available actions:
-	- ActionTyping
-	- ActionUploadPhoto
-	- ActionRecordVideo
-	- ActionUploadVideo
-	- ActionRecordAudio
-	- ActionUploadAudio
-	- ActionUploadDocument
-	- ActionFindLocation
-	- ActionRecordVideoNote
-	- ActionUploadVideoNote
+  - ActionTyping
+  - ActionUploadPhoto
+  - ActionRecordVideo
+  - ActionUploadVideo
+  - ActionRecordAudio
+  - ActionUploadAudio
+  - ActionUploadDocument
+  - ActionFindLocation
+  - ActionRecordVideoNote
+  - ActionUploadVideoNote
 */
 func (c *Client) SendChatAction(chatID string, action chatAction) error {
 	req := url.Values{}
@@ -953,12 +953,12 @@ type UserProfilePhotos struct {
 
 // GetUserProfilePhotos options
 var (
-	OptOffset = func(offset int) sendOption {
+	OptOffset = func(offset int) SendOption {
 		return func(v url.Values) {
 			v.Set("offset", fmt.Sprint(offset))
 		}
 	}
-	OptLimit = func(limit int) sendOption {
+	OptLimit = func(limit int) SendOption {
 		return func(v url.Values) {
 			v.Set("limit", fmt.Sprint(limit))
 		}
@@ -967,10 +967,10 @@ var (
 
 /*
 GetUserProfilePhotos returs user's profile pictures. Available options:
-	- OptOffset(offset int)
-	- OptLimit(limit int)
+  - OptOffset(offset int)
+  - OptLimit(limit int)
 */
-func (c *Client) GetUserProfilePhotos(userID int, opts ...sendOption) (*UserProfilePhotos, error) {
+func (c *Client) GetUserProfilePhotos(userID int, opts ...SendOption) (*UserProfilePhotos, error) {
 	req := url.Values{}
 	req.Set("user_id", fmt.Sprint(userID))
 	for _, opt := range opts {
@@ -1002,7 +1002,7 @@ func (c *Client) GetFile(fileID string) (*File, error) {
 
 // KickChatMember options
 var (
-	OptUntilDate = func(date time.Time) sendOption {
+	OptUntilDate = func(date time.Time) SendOption {
 		return func(v url.Values) {
 			v.Set("until_date", fmt.Sprint(date.Unix()))
 		}
@@ -1011,9 +1011,9 @@ var (
 
 /*
 KickChatMember kicks user from group, supergroup or channel. Available options:
-	- OptUntilDate(date time.Time)
+  - OptUntilDate(date time.Time)
 */
-func (c *Client) KickChatMember(chatID string, userID int, opts ...sendOption) error {
+func (c *Client) KickChatMember(chatID string, userID int, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("user_id", fmt.Sprint(userID))
@@ -1037,9 +1037,9 @@ func (c *Client) UnbanChatMember(chatID string, userID int) error {
 
 /*
 RestrictChatMember restrict a user in a supergroup. Available options:
-	- OptUntilDate(date time.Time)
+  - OptUntilDate(date time.Time)
 */
-func (c *Client) RestrictChatMember(chatID string, userID int, perm *ChatPermissions, opts ...sendOption) error {
+func (c *Client) RestrictChatMember(chatID string, userID int, perm *ChatPermissions, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("user_id", fmt.Sprint(userID))
@@ -1138,9 +1138,9 @@ func (c *Client) SetChatDescription(chatID, description string) error {
 
 /*
 PinChatMessage pin a message in a supergroup or a channel. Available options:
-	- OptDisableNotification
+  - OptDisableNotification
 */
-func (c *Client) PinChatMessage(chatID string, messageID int, opts ...sendOption) error {
+func (c *Client) PinChatMessage(chatID string, messageID int, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("message_id", fmt.Sprint(messageID))
@@ -1262,7 +1262,7 @@ func (c *Client) DeleteChatStickerSet(chatID string) error {
 
 // Options for AnswerCallbackQuery
 var (
-	OptText = func(text string) sendOption {
+	OptText = func(text string) SendOption {
 		return func(v url.Values) {
 			v.Set("text", text)
 		}
@@ -1270,12 +1270,12 @@ var (
 	OptShowAlert = func(v url.Values) {
 		v.Set("show_alert", "true")
 	}
-	OptURL = func(u string) sendOption {
+	OptURL = func(u string) SendOption {
 		return func(v url.Values) {
 			v.Set("url", u)
 		}
 	}
-	OptCacheTime = func(d time.Duration) sendOption {
+	OptCacheTime = func(d time.Duration) SendOption {
 		return func(v url.Values) {
 			v.Set("cache_time", fmt.Sprint(int(d.Seconds())))
 		}
@@ -1284,12 +1284,12 @@ var (
 
 /*
 AnswerCallbackQuery send answer to callback query sent from inline keyboard. Available options:
-	- OptText(text string)
-	- OptShowAlert
-	- OptURL(url string)
-	- OptCacheTime(d time.Duration)
+  - OptText(text string)
+  - OptShowAlert
+  - OptURL(url string)
+  - OptCacheTime(d time.Duration)
 */
-func (c *Client) AnswerCallbackQuery(callbackQueryID string, opts ...sendOption) error {
+func (c *Client) AnswerCallbackQuery(callbackQueryID string, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("callback_query_id", callbackQueryID)
 	for _, opt := range opts {
@@ -1327,12 +1327,12 @@ func (c *Client) SetMyCommands(commands []BotCommand) error {
 
 /*
 EditMessageText edit text and game messages sent by the bot. Available options:
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableWebPagePreview
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableWebPagePreview
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
 */
-func (c *Client) EditMessageText(chatID string, messageID int, text string, opts ...sendOption) (*Message, error) {
+func (c *Client) EditMessageText(chatID string, messageID int, text string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("message_id", fmt.Sprint(messageID))
@@ -1347,12 +1347,12 @@ func (c *Client) EditMessageText(chatID string, messageID int, text string, opts
 
 /*
 EditInlineMessageText edit text and game messages sent via the bot (for inline bots). Available options:
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptDisableWebPagePreview
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptDisableWebPagePreview
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
 */
-func (c *Client) EditInlineMessageText(inlineMessageID, text string, opts ...sendOption) error {
+func (c *Client) EditInlineMessageText(inlineMessageID, text string, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("inline_message_id", inlineMessageID)
 	req.Set("text", text)
@@ -1365,11 +1365,11 @@ func (c *Client) EditInlineMessageText(inlineMessageID, text string, opts ...sen
 
 /*
 EditMessageCaption edit message caption sent by the bot. Available options:
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
 */
-func (c *Client) EditMessageCaption(chatID string, messageID int, caption string, opts ...sendOption) (*Message, error) {
+func (c *Client) EditMessageCaption(chatID string, messageID int, caption string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("message_id", fmt.Sprint(messageID))
@@ -1384,11 +1384,11 @@ func (c *Client) EditMessageCaption(chatID string, messageID int, caption string
 
 /*
 EditInlineMessageCaption edit message caption sent via the bot (for inline bots). Available options:
-	- OptParseModeHTML
-	- OptParseModeMarkdown
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptParseModeHTML
+  - OptParseModeMarkdown
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
 */
-func (c *Client) EditInlineMessageCaption(inlineMessageID, caption string, opts ...sendOption) error {
+func (c *Client) EditInlineMessageCaption(inlineMessageID, caption string, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("inline_message_id", inlineMessageID)
 	req.Set("caption", caption)
@@ -1401,9 +1401,9 @@ func (c *Client) EditInlineMessageCaption(inlineMessageID, caption string, opts 
 
 /*
 EditMessageReplyMarkup edit only the reply markup of messages sent by the bot. Available options:
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
 */
-func (c *Client) EditMessageReplyMarkup(chatID string, messageID int, opts ...sendOption) (*Message, error) {
+func (c *Client) EditMessageReplyMarkup(chatID string, messageID int, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("message_id", fmt.Sprint(messageID))
@@ -1417,9 +1417,9 @@ func (c *Client) EditMessageReplyMarkup(chatID string, messageID int, opts ...se
 
 /*
 EditInlineMessageReplyMarkup edit only the reply markup of messages sent by the bot. Available options:
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
 */
-func (c *Client) EditInlineMessageReplyMarkup(inlineMessageID string, opts ...sendOption) error {
+func (c *Client) EditInlineMessageReplyMarkup(inlineMessageID string, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("inline_message_id", inlineMessageID)
 	for _, opt := range opts {
@@ -1442,16 +1442,16 @@ func (c *Client) DeleteMessage(chatID string, messageID int) error {
 
 /*
 SendStickerFile send .webp file sticker. Available options:
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendStickerFile(chatID string, filename string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendStickerFile(chatID string, filename string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	for _, opt := range opts {
@@ -1464,16 +1464,16 @@ func (c *Client) SendStickerFile(chatID string, filename string, opts ...sendOpt
 
 /*
 SendSticker send previously uploaded sticker. Available options:
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendSticker(chatID, fileID string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendSticker(chatID, fileID string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("sticker", fileID)
@@ -1522,7 +1522,7 @@ var (
 	OptContainsMasks = func(v url.Values) {
 		v.Set("contains_masks", "true")
 	}
-	OptMaskPosition = func(pos *MaskPosition) sendOption {
+	OptMaskPosition = func(pos *MaskPosition) SendOption {
 		return func(v url.Values) {
 			p, _ := json.Marshal(pos)
 			v.Set("mask_position", string(p))
@@ -1535,11 +1535,11 @@ var (
 
 /*
 CreateNewStickerSetFile creates new sticker set with sticker file. Available options:
-	- OptContainsMasks
-	- OptMaskPosition(pos *MaskPosition)
-	- OptAnimatedSticker
+  - OptContainsMasks
+  - OptMaskPosition(pos *MaskPosition)
+  - OptAnimatedSticker
 */
-func (c *Client) CreateNewStickerSetFile(userID int, name, title, stickerFilename, emojis string, opts ...sendOption) error {
+func (c *Client) CreateNewStickerSetFile(userID int, name, title, stickerFilename, emojis string, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("user_id", fmt.Sprint(userID))
 	req.Set("name", name)
@@ -1561,10 +1561,10 @@ func (c *Client) CreateNewStickerSetFile(userID int, name, title, stickerFilenam
 
 /*
 CreateNewStickerSet creates new sticker set with previously uploaded file. Available options:
-	- OptContainsMasks
-	- OptMaskPosition(pos *MaskPosition)
+  - OptContainsMasks
+  - OptMaskPosition(pos *MaskPosition)
 */
-func (c *Client) CreateNewStickerSet(userID int, name, title, fileID, emojis string, opts ...sendOption) error {
+func (c *Client) CreateNewStickerSet(userID int, name, title, fileID, emojis string, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("user_id", fmt.Sprint(userID))
 	req.Set("name", name)
@@ -1580,10 +1580,10 @@ func (c *Client) CreateNewStickerSet(userID int, name, title, fileID, emojis str
 
 /*
 AddStickerToSetFile add a new sticker file to a set created by the bot. Available options:
-	- OptMaskPosition(pos *MaskPosition)
-	- OptAnimatedSticker
+  - OptMaskPosition(pos *MaskPosition)
+  - OptAnimatedSticker
 */
-func (c *Client) AddStickerToSetFile(userID int, name, filename, emojis string, opts ...sendOption) error {
+func (c *Client) AddStickerToSetFile(userID int, name, filename, emojis string, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("user_id", fmt.Sprint(userID))
 	req.Set("name", name)
@@ -1604,9 +1604,9 @@ func (c *Client) AddStickerToSetFile(userID int, name, filename, emojis string, 
 
 /*
 AddStickerToSet add a new sticker to a set created by the bot. Available options:
-	- OptMaskPosition(pos *MaskPosition)
+  - OptMaskPosition(pos *MaskPosition)
 */
-func (c *Client) AddStickerToSet(userID int, name, fileID, emojis string, opts ...sendOption) error {
+func (c *Client) AddStickerToSet(userID int, name, fileID, emojis string, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("user_id", fmt.Sprint(userID))
 	req.Set("name", name)
@@ -2065,17 +2065,17 @@ var (
 	OptIsPersonal = func(v url.Values) {
 		v.Set("is_personal", "true")
 	}
-	OptNextOffset = func(offset string) sendOption {
+	OptNextOffset = func(offset string) SendOption {
 		return func(v url.Values) {
 			v.Set("next_offset", offset)
 		}
 	}
-	OptSwitchPmText = func(text string) sendOption {
+	OptSwitchPmText = func(text string) SendOption {
 		return func(v url.Values) {
 			v.Set("switch_pm_text", text)
 		}
 	}
-	OptSwitchPmParameter = func(param string) sendOption {
+	OptSwitchPmParameter = func(param string) SendOption {
 		return func(v url.Values) {
 			v.Set("switch_pm_parameter", param)
 		}
@@ -2084,13 +2084,13 @@ var (
 
 /*
 AnswerInlineQuery send answer to an inline query. No more than 50 results per query are allowed. Available Options:
-	- OptCacheTime(d *time.Duration)
-	- OptIsPersonal
-	- OptNextOffset(offset string)
-	- OptSwitchPmText(text string)
-	- OptSwitchPmParameter(param string)
+  - OptCacheTime(d *time.Duration)
+  - OptIsPersonal
+  - OptNextOffset(offset string)
+  - OptSwitchPmText(text string)
+  - OptSwitchPmParameter(param string)
 */
-func (c *Client) AnswerInlineQuery(inlineQueryID string, results []InlineQueryResult, opts ...sendOption) error {
+func (c *Client) AnswerInlineQuery(inlineQueryID string, results []InlineQueryResult, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("inline_query_id", inlineQueryID)
 	res, _ := json.Marshal(results)
@@ -2110,27 +2110,27 @@ type LabeledPrice struct {
 
 // SendInvoice options
 var (
-	OptProviderData = func(data string) sendOption {
+	OptProviderData = func(data string) SendOption {
 		return func(v url.Values) {
 			v.Set("provider_data", data)
 		}
 	}
-	OptPhotoURL = func(u string) sendOption {
+	OptPhotoURL = func(u string) SendOption {
 		return func(v url.Values) {
 			v.Set("photo_url", u)
 		}
 	}
-	OptPhotoSize = func(size int) sendOption {
+	OptPhotoSize = func(size int) SendOption {
 		return func(v url.Values) {
 			v.Set("photo_size", fmt.Sprint(size))
 		}
 	}
-	OptPhotoWidth = func(width int) sendOption {
+	OptPhotoWidth = func(width int) SendOption {
 		return func(v url.Values) {
 			v.Set("photo_width", fmt.Sprint(width))
 		}
 	}
-	OptPhotoHeight = func(height int) sendOption {
+	OptPhotoHeight = func(height int) SendOption {
 		return func(v url.Values) {
 			v.Set("photo_height", fmt.Sprint(height))
 		}
@@ -2146,23 +2146,23 @@ var (
 
 /*
 SendInvoice send invoices. Available Options:
-	- OptProviderData(data string)
-	- OptPhotoURL(u string)
-	- OptPhotoSize(size int)
-	- OptPhotoWidth(width int)
-	- OptPhotoHeight(height int)
-	- OptNeedName
-	- OptNeedPhoneNumber
-	- OptNeedEmail
-	- OptNeedShippingAddress
-	- OptSendPhoneNumberToProvider
-	- OptSendEmailToProvider
-	- OptIsFlexible
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptProviderData(data string)
+  - OptPhotoURL(u string)
+  - OptPhotoSize(size int)
+  - OptPhotoWidth(width int)
+  - OptPhotoHeight(height int)
+  - OptNeedName
+  - OptNeedPhoneNumber
+  - OptNeedEmail
+  - OptNeedShippingAddress
+  - OptSendPhoneNumberToProvider
+  - OptSendEmailToProvider
+  - OptIsFlexible
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
 */
-func (c *Client) SendInvoice(chatID, payload, providerToken string, invoice *Invoice, prices []LabeledPrice, opts ...sendOption) (*Message, error) {
+func (c *Client) SendInvoice(chatID, payload, providerToken string, invoice *Invoice, prices []LabeledPrice, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("title", invoice.Title)
@@ -2190,13 +2190,13 @@ type ShippingOption struct {
 
 // AnswerShippingQuery options
 var (
-	OptShippingOptions = func(options []ShippingOption) sendOption {
+	OptShippingOptions = func(options []ShippingOption) SendOption {
 		return func(v url.Values) {
 			op, _ := json.Marshal(options)
 			v.Set("shipping_options", string(op))
 		}
 	}
-	OptErrorMessage = func(msg string) sendOption {
+	OptErrorMessage = func(msg string) SendOption {
 		return func(v url.Values) {
 			v.Set("error_message", msg)
 		}
@@ -2205,10 +2205,10 @@ var (
 
 /*
 AnswerShippingQuery reply to shipping queries. Available options:
-	- OptShippingOptions(options []ShippingOption)
-	- OptErrorMessage(msg string)
+  - OptShippingOptions(options []ShippingOption)
+  - OptErrorMessage(msg string)
 */
-func (c *Client) AnswerShippingQuery(shippingQueryID string, ok bool, opts ...sendOption) error {
+func (c *Client) AnswerShippingQuery(shippingQueryID string, ok bool, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("shipping_query_id", shippingQueryID)
 	req.Set("ok", fmt.Sprint(ok))
@@ -2221,9 +2221,9 @@ func (c *Client) AnswerShippingQuery(shippingQueryID string, ok bool, opts ...se
 
 /*
 AnswerPreCheckoutQuery respond to pre-checkout queries. Available options:
-	- OptErrorMessage(msg string)
+  - OptErrorMessage(msg string)
 */
-func (c *Client) AnswerPreCheckoutQuery(preCheckoutQueryID string, ok bool, opts ...sendOption) error {
+func (c *Client) AnswerPreCheckoutQuery(preCheckoutQueryID string, ok bool, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("pre_checkout_query_id", preCheckoutQueryID)
 	req.Set("ok", fmt.Sprint(ok))
@@ -2323,11 +2323,11 @@ func (c *Client) SetPassportDataErrors(userID int, errors []PassportElementError
 
 /*
 SendGame send a game. Available options:
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
 */
-func (c *Client) SendGame(chatID, gameShortName string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendGame(chatID, gameShortName string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("game_short_name", gameShortName)
@@ -2351,10 +2351,10 @@ var (
 
 /*
 SetGameScore set the score of the specified user in a game. Available options:
-	- OptForce
-	- OptDisableEditMessage
+  - OptForce
+  - OptDisableEditMessage
 */
-func (c *Client) SetGameScore(chatID string, messageID, userID, score int, opts ...sendOption) (*Message, error) {
+func (c *Client) SetGameScore(chatID string, messageID, userID, score int, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("message_id", fmt.Sprint(messageID))
@@ -2370,10 +2370,10 @@ func (c *Client) SetGameScore(chatID string, messageID, userID, score int, opts 
 
 /*
 SetInlineGameScore set the score of the specified user in a game (for inline messages). Available options:
-	- OptForce
-	- OptDisableEditMessage
+  - OptForce
+  - OptDisableEditMessage
 */
-func (c *Client) SetInlineGameScore(inlineMessageID string, userID, score int, opts ...sendOption) error {
+func (c *Client) SetInlineGameScore(inlineMessageID string, userID, score int, opts ...SendOption) error {
 	req := url.Values{}
 	req.Set("inline_message_id", inlineMessageID)
 	req.Set("user_id", fmt.Sprint(userID))
@@ -2431,7 +2431,7 @@ var (
 	OptNotAnonymous = func(u url.Values) {
 		u.Set("is_anonymous", "false")
 	}
-	OptPollType = func(pollType PollType) sendOption {
+	OptPollType = func(pollType PollType) SendOption {
 		return func(u url.Values) {
 			u.Set("type", string(pollType))
 		}
@@ -2439,7 +2439,7 @@ var (
 	OptAllowMultipleAnswers = func(u url.Values) {
 		u.Set("allows_multiple_answers", "true")
 	}
-	OptCorrectOptionID = func(id int) sendOption {
+	OptCorrectOptionID = func(id int) SendOption {
 		return func(u url.Values) {
 			u.Set("correct_option_id", fmt.Sprint(id))
 		}
@@ -2451,21 +2451,21 @@ var (
 
 /*
 SendPoll sends native telegram poll. Available Options:
-	- OptNotAnonymous
-	- OptPollType(pollType PollType)
-	- OptAllowMultipleAnswers
-	- OptCorrectOptionID(id int)
-	- OptClosedPoll
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptNotAnonymous
+  - OptPollType(pollType PollType)
+  - OptAllowMultipleAnswers
+  - OptCorrectOptionID(id int)
+  - OptClosedPoll
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendPoll(chatID string, question string, options []string, opts ...sendOption) (*Message, error) {
+func (c *Client) SendPoll(chatID string, question string, options []string, opts ...SendOption) (*Message, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("question", question)
@@ -2481,16 +2481,16 @@ func (c *Client) SendPoll(chatID string, question string, options []string, opts
 
 /*
 SendDice sends native telegram dice. Available Options:
-	- OptDisableNotification
-	- OptReplyToMessageID(id int)
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
-	- OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
-	- OptReplyKeyboardRemove
-	- OptReplyKeyboardRemoveSelective
-	- OptForceReply
-	- OptForceReplySelective
+  - OptDisableNotification
+  - OptReplyToMessageID(id int)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptReplyKeyboardMarkup(markup *ReplyKeyboardMarkup)
+  - OptReplyKeyboardRemove
+  - OptReplyKeyboardRemoveSelective
+  - OptForceReply
+  - OptForceReplySelective
 */
-func (c *Client) SendDice(chatID string, emoji string, opts ...sendOption) (*Dice, error) {
+func (c *Client) SendDice(chatID string, emoji string, opts ...SendOption) (*Dice, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("emoji", emoji)
@@ -2504,9 +2504,9 @@ func (c *Client) SendDice(chatID string, emoji string, opts ...sendOption) (*Dic
 
 /*
 StopPoll stops poll. Available Options:
-	- OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
+  - OptInlineKeyboardMarkup(markup *InlineKeyboardMarkup)
 */
-func (c *Client) StopPoll(chatID string, messageID string, opts ...sendOption) (*Poll, error) {
+func (c *Client) StopPoll(chatID string, messageID string, opts ...SendOption) (*Poll, error) {
 	req := url.Values{}
 	req.Set("chat_id", chatID)
 	req.Set("message_id", messageID)
